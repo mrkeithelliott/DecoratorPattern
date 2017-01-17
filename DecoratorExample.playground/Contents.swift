@@ -13,7 +13,11 @@ struct DefaultDialer: DialerInterface{
     }
 }
 
-struct HomePhoneDialerDecorator: DialerInterface{
+let dialer = DefaultDialer()
+dialer.contactAction()
+
+
+struct FollowupCallDialerDecorator: DialerInterface{
     let dialer: DialerInterface
     
     init(dialer: DialerInterface){
@@ -22,15 +26,15 @@ struct HomePhoneDialerDecorator: DialerInterface{
     
     func contactAction() {
         dialer.contactAction()
-        print("-------- Home Phone ----------------")
-        print("Home Phone Dialing Action completed")
+        print("-------- Follow-up Call ----------------")
+        print("Follow-up Dialing Action completed")
     }
 }
 
 
-let dialer = DefaultDialer()
-let homePhoneDialer = HomePhoneDialerDecorator(dialer: dialer)
-homePhoneDialer.contactAction()
+
+let followupCallDialerDecorator = FollowupCallDialerDecorator(dialer: dialer)
+followupCallDialerDecorator.contactAction()
 
 
 struct CellPhoneDialerDecorator: DialerInterface{
@@ -47,9 +51,7 @@ struct CellPhoneDialerDecorator: DialerInterface{
     }
 }
 
-let cellPhoneDialer = CellPhoneDialerDecorator(dialer: homePhoneDialer)
-cellPhoneDialer.contactAction()
-
+let cellPhoneDialer = CellPhoneDialerDecorator(dialer: followupCallDialerDecorator)
 
 struct TextMeDecorator: DialerInterface {
     let dialer: DialerInterface
@@ -69,6 +71,7 @@ let textMe = TextMeDecorator(dialer: cellPhoneDialer)
 textMe.contactAction()
 
 
-let callAndTextMe = TextMeDecorator(dialer: HomePhoneDialerDecorator(dialer: DefaultDialer()))
+let callAndTextMe = TextMeDecorator(dialer: FollowupCallDialerDecorator(dialer: DefaultDialer()))
 
 callAndTextMe.contactAction()
+cellPhoneDialer.contactAction()
